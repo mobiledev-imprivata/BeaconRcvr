@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D64C579D1CB41F1C00E22A78 /* BeaconManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D64C579C1CB41F1C00E22A78 /* BeaconManager.swift */; };
 		D6EA41EF1CB4063E009A584E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6EA41EE1CB4063E009A584E /* AppDelegate.swift */; };
 		D6EA41F11CB4063E009A584E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6EA41F01CB4063E009A584E /* ViewController.swift */; };
 		D6EA41F41CB4063E009A584E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D6EA41F21CB4063E009A584E /* Main.storyboard */; };
@@ -15,6 +16,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		D64C579C1CB41F1C00E22A78 /* BeaconManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeaconManager.swift; sourceTree = "<group>"; };
 		D6EA41EB1CB4063E009A584E /* BeaconRcvr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BeaconRcvr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D6EA41EE1CB4063E009A584E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D6EA41F01CB4063E009A584E /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -54,6 +56,7 @@
 		D6EA41ED1CB4063E009A584E /* BeaconRcvr */ = {
 			isa = PBXGroup;
 			children = (
+				D64C579C1CB41F1C00E22A78 /* BeaconManager.swift */,
 				D6EA41EE1CB4063E009A584E /* AppDelegate.swift */,
 				D6EA41F01CB4063E009A584E /* ViewController.swift */,
 				D6EA41F21CB4063E009A584E /* Main.storyboard */,
@@ -96,6 +99,11 @@
 				TargetAttributes = {
 					D6EA41EA1CB4063E009A584E = {
 						CreatedOnToolsVersion = 7.3;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 0;
+							};
+						};
 					};
 				};
 			};
@@ -135,6 +143,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D64C579D1CB41F1C00E22A78 /* BeaconManager.swift in Sources */,
 				D6EA41F11CB4063E009A584E /* ViewController.swift in Sources */,
 				D6EA41EF1CB4063E009A584E /* AppDelegate.swift in Sources */,
 			);
@@ -288,6 +297,7 @@
 				D6EA41FF1CB4063E009A584E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

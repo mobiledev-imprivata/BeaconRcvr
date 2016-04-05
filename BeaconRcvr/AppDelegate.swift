@@ -12,7 +12,8 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    
+    let beaconManager = BeaconManager()
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         print("application didFinishLaunchingWithOptions")
@@ -22,6 +23,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         // Override point for customization after application launch.
+        
+        beaconManager.startMonitoring()
+        
         return true
     }
 
