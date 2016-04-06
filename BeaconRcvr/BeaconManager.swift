@@ -26,24 +26,24 @@ class BeaconManager: NSObject {
     var delegate: BeaconManagerDelegate?
     
     func startMonitoring() {
-        print("startMonitoring")
+        log("startMonitoring")
         
         guard beaconRegion == nil && locationManager == nil else {
-            print("already monitoring")
+            log("already monitoring")
             return
         }
         
         guard CLLocationManager.isMonitoringAvailableForClass(CLBeaconRegion.self) else {
-            print("monitoring is not available for CLBeaconRegion")
+            log("monitoring is not available for CLBeaconRegion")
             return
         }
         
         guard CLLocationManager.isRangingAvailable() else {
-            print("ranging is not available for CLBeaconRegion")
+            log("ranging is not available for CLBeaconRegion")
             return
         }
         
-        print("authorizationStatus \(CLLocationManager.authorizationStatus().toString())")
+        log("authorizationStatus \(CLLocationManager.authorizationStatus().toString())")
         
         locationManager = CLLocationManager()
         locationManager.delegate = self
@@ -53,10 +53,10 @@ class BeaconManager: NSObject {
     }
     
     func stopMonitoring() {
-        print("stopMonitoring")
+        log("stopMonitoring")
         
         guard beaconRegion != nil && locationManager != nil else {
-            print("already stopped")
+            log("already stopped")
             return
         }
         
@@ -66,11 +66,11 @@ class BeaconManager: NSObject {
     }
     
     private func startScanning() {
-        print("startScanning")
+        log("startScanning")
         beaconRegion = CLBeaconRegion(proximityUUID: proximityUUID, major: major, minor: minor, identifier: identifier)
         locationManager.startMonitoringForRegion(beaconRegion)
         // locationManager.requestStateForRegion(beaconRegion)
-        // locationManager.startRangingBeaconsInRegion(beaconRegion)
+        locationManager.startRangingBeaconsInRegion(beaconRegion)
     }
     
 }
@@ -78,10 +78,10 @@ class BeaconManager: NSObject {
 extension BeaconManager: CLLocationManagerDelegate {
     
     func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
-        print("locationManager didChangeAuthorizationStatus \(status.toString())")
+        log("locationManager didChangeAuthorizationStatus \(status.toString())")
         
         guard CLLocationManager.authorizationStatus()  == .AuthorizedAlways else {
-            print("status is not AuthorizedAlways")
+            log("status is not AuthorizedAlways")
             return
         }
         
@@ -89,42 +89,42 @@ extension BeaconManager: CLLocationManagerDelegate {
     }
     
     func locationManagerDidPauseLocationUpdates(manager: CLLocationManager) {
-        print("locationManagerDidPauseLocationUpdates")
+        log("locationManagerDidPauseLocationUpdates")
     }
     
     func locationManagerDidResumeLocationUpdates(manager: CLLocationManager) {
-        print("locationManagerDidResumeLocationUpdates")
+        log("locationManagerDidResumeLocationUpdates")
     }
     
     func locationManager(manager: CLLocationManager, didStartMonitoringForRegion region: CLRegion) {
-        print("locationManager didStartMonitoringForRegion")
+        log("locationManager didStartMonitoringForRegion")
     }
     
     func locationManager(manager: CLLocationManager, monitoringDidFailForRegion region: CLRegion?, withError error: NSError) {
-        print("locationManager monitoringDidFailForRegion")
+        log("locationManager monitoringDidFailForRegion")
     }
     
     func locationManager(manager: CLLocationManager, didEnterRegion region: CLRegion) {
-        print("locationManager didEnterRegion")
+        log("locationManager didEnterRegion")
         delegate?.showNotification("didEnterRegion")
     }
     
     func locationManager(manager: CLLocationManager, didExitRegion region: CLRegion) {
-        print("locationManager didExitRegion")
+        log("locationManager didExitRegion")
         delegate?.showNotification("didExitRegion")
     }
     
     func locationManager(manager: CLLocationManager, didDetermineState state: CLRegionState, forRegion region: CLRegion) {
-        print("locationManager didDetermineState \(state.toString())")
+        log("locationManager didDetermineState \(state.toString())")
     }
     
     func locationManager(manager: CLLocationManager, didRangeBeacons beacons: [CLBeacon], inRegion region: CLBeaconRegion) {
-        print("locationManager didRangeBeacons \(beacons.count)")
+        log("locationManager didRangeBeacons \(beacons.count)")
         guard beacons.count > 0 else {
-            print("no beacons found")
+            log("no beacons found")
             return
         }
-        print("proximity \(beacons[0].proximity.toString())")
+        log("proximity \(beacons[0].proximity.toString())")
     }
 }
 
