@@ -13,17 +13,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     
-    let beaconManager = BeaconManager()
+    var beaconManager: BeaconManager!
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         print("application didFinishLaunchingWithOptions")
         
         if let launchOptions = launchOptions where launchOptions[UIApplicationLaunchOptionsLocationKey] != nil {
             print("app launched in response to a CoreLocation event")
+            showNotification("app launched in response to a CoreLocation event")
         }
 
         // Override point for customization after application launch.
         
+        application.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: .Alert, categories: nil))
+        
+        beaconManager = BeaconManager()
+        beaconManager.delegate = self
         beaconManager.startMonitoring()
         
         return true
@@ -56,6 +61,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         print("applicationWillTerminate")
     }
 
+}
 
+extension AppDelegate: BeaconManagerDelegate {
+
+    func showNotification(message: String) {
+        let notification = UILocalNotification()
+        notification.alertBody = message
+        UIApplication.sharedApplication().presentLocalNotificationNow(notification)
+    }
+    
 }
 
