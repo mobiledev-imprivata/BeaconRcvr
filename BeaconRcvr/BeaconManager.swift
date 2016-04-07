@@ -130,7 +130,7 @@ extension BeaconManager: CLLocationManagerDelegate {
 
 extension CLAuthorizationStatus {
     
-    func toString() -> String {
+    private func toString() -> String {
         switch self {
         case .NotDetermined: return "NotDetermined"
         case .Restricted: return "Restricted"
@@ -144,7 +144,7 @@ extension CLAuthorizationStatus {
 
 extension CLRegionState {
     
-    func toString() -> String {
+    private func toString() -> String {
         switch self {
         case .Unknown: return "Unknown"
         case .Inside: return "Inside"
@@ -156,7 +156,7 @@ extension CLRegionState {
 
 extension CLProximity {
     
-    func toString() -> String {
+    private func toString() -> String {
         switch self {
         case .Unknown: return "Unknown"
         case .Immediate: return "Immediate"
