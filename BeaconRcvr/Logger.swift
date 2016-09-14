@@ -11,12 +11,12 @@ import Foundation
 let newMessageNotification = "com.imprivata.newMessage"
 
 func timestamp() -> String {
-    let dateFormatter = NSDateFormatter()
+    let dateFormatter = DateFormatter()
     dateFormatter.dateFormat = "YYYY-MM-dd HH:mm:ss.SSS"
-    return dateFormatter.stringFromDate(NSDate())
+    return dateFormatter.string(from: Date())
 }
 
-func log(message: String) {
+func log(_ message: String) {
     print("[\(timestamp())] \(message)")
-    NSNotificationCenter.defaultCenter().postNotificationName(newMessageNotification, object: nil, userInfo: ["message": message])
+    NotificationCenter.default.post(name: Notification.Name(rawValue: newMessageNotification), object: nil, userInfo: ["message": message])
 }

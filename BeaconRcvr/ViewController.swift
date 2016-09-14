@@ -13,7 +13,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var textView: UITextView!
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
     override func viewDidLoad() {
@@ -21,7 +21,7 @@ class ViewController: UIViewController {
         // Do any additional setup after loading the view, typically from a nib.
         
         log("viewDidLoad")
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ViewController.appendMessage(_:)), name: newMessageNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ViewController.appendMessage(_:)), name: NSNotification.Name(rawValue: newMessageNotification), object: nil)
     }
 
     override func didReceiveMemoryWarning() {
@@ -29,8 +29,8 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    func appendMessage(notification: NSNotification) {
-        guard let userInfo = notification.userInfo else { return }
+    func appendMessage(_ notification: Notification) {
+        guard let userInfo = (notification as NSNotification).userInfo else { return }
         guard let message = userInfo["message"] as? String else { return }
         let newText = textView.text + "\n" + message
         textView.text = newText
