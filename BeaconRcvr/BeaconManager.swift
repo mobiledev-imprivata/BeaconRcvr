@@ -142,11 +142,11 @@ extension CLAuthorizationStatus {
     
     fileprivate func toString() -> String {
         switch self {
-        case .notDetermined: return "NotDetermined"
-        case .restricted: return "Restricted"
-        case .denied: return "Denied"
-        case .authorizedAlways: return "AuthorizedAlways"
-        case .authorizedWhenInUse: return "AuthorizedWhenInUse"
+        case .notDetermined: return "notDetermined"
+        case .restricted: return "restricted"
+        case .denied: return "denied"
+        case .authorizedAlways: return "authorizedAlways"
+        case .authorizedWhenInUse: return "authorizedWhenInUse"
         }
     }
     
@@ -156,9 +156,9 @@ extension CLRegionState {
     
     fileprivate func toString() -> String {
         switch self {
-        case .unknown: return "Unknown"
-        case .inside: return "Inside"
-        case .outside: return "Outside"
+        case .unknown: return "unknown"
+        case .inside: return "inside"
+        case .outside: return "outside"
         }
     }
     
@@ -168,10 +168,10 @@ extension CLProximity {
     
     fileprivate func toString() -> String {
         switch self {
-        case .unknown: return "Unknown"
-        case .immediate: return "Immediate"
-        case .near: return "Near"
-        case .far: return "Far"
+        case .unknown: return "unknown"
+        case .immediate: return "immediate"
+        case .near: return "near"
+        case .far: return "far"
         }
     }
     
