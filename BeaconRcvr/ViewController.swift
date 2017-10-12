@@ -29,7 +29,7 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    func appendMessage(_ notification: Notification) {
+    @objc func appendMessage(_ notification: Notification) {
         guard let userInfo = (notification as NSNotification).userInfo else { return }
         guard let message = userInfo["message"] as? String else { return }
         let newText = textView.text + "\n" + message
