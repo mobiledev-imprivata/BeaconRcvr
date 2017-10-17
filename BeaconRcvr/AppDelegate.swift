@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import UserNotifications
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -25,7 +26,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Override point for customization after application launch.
         
-        application.registerUserNotificationSettings(UIUserNotificationSettings(types: .alert, categories: nil))
+        UNUserNotificationCenter.current().delegate = self
+        
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { (granted, error) in
+            if granted {
+                log("permission granted")
+            } else {
+                log("permission not granted")
+            }
+            if let error = error {
+                log(error.localizedDescription)
+            }
+        }
         
         beaconManager = BeaconManager()
         beaconManager.delegate = self
@@ -70,12 +82,34 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 }
 
+extension AppDelegate: UNUserNotificationCenterDelegate {
+    
+    // called when a notification is delivered to a foreground app
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        log("notification received for \(notification.request.identifier) while in foreground")
+        completionHandler([.alert, .sound])
+    }
+    
+}
+
 extension AppDelegate: BeaconManagerDelegate {
 
     func showNotification(_ message: String) {
-        let notification = UILocalNotification()
-        notification.alertBody = message
-        UIApplication.shared.presentLocalNotificationNow(notification)
+        let content = UNMutableNotificationContent()
+        content.title = "Beacon Receiver"
+        content.body = message
+        content.sound = UNNotificationSound.default()
+        
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
+        
+        let request = UNNotificationRequest(identifier: "identifier", content: content, trigger: trigger)
+        
+        UNUserNotificationCenter.current().add(request) {
+            error in
+            if let error = error {
+                log("error scheduling local notification \(error.localizedDescription)")
+            }
+        }
     }
     
 }
