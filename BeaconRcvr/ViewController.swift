@@ -32,10 +32,10 @@ class ViewController: UIViewController {
     @objc func appendMessage(_ notification: Notification) {
         guard let userInfo = notification.userInfo else { return }
         guard let message = userInfo["message"] as? String else { return }
-        let newText = textView.text + "\n" + message
         DispatchQueue.main.async {
+            let newText = self.textView.text + "\n" + message
             self.textView.text = newText
-            self.textView.scrollRangeToVisible(NSRange(location: newText.characters.count, length: 0))
+            self.textView.scrollRangeToVisible(NSRange(location: newText.count, length: 0))
         }
     }
 
