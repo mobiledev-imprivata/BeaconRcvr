@@ -70,7 +70,8 @@ final class BeaconManager: NSObject {
     
     fileprivate func startScanning() {
         log("startScanning")
-        beaconRegion = CLBeaconRegion(proximityUUID: proximityUUID, major: major, minor: minor, identifier: identifier)
+        // beaconRegion = CLBeaconRegion(proximityUUID: proximityUUID, major: major, minor: minor, identifier: identifier)
+        beaconRegion = CLBeaconRegion(proximityUUID: proximityUUID, identifier: identifier)
         locationManager.startMonitoring(for: beaconRegion)
         // locationManager.requestStateForRegion(beaconRegion)
         // locationManager.startRangingBeaconsInRegion(beaconRegion)
