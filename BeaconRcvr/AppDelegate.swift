@@ -16,10 +16,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var beaconManager: BeaconManager!
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         log("application didFinishLaunchingWithOptions")
         
-        if let launchOptions = launchOptions, launchOptions[UIApplicationLaunchOptionsKey.location] != nil {
+        if let launchOptions = launchOptions, launchOptions[UIApplication.LaunchOptionsKey.location] != nil {
             log("app launched in response to a CoreLocation event")
             showNotification("app launched in response to a CoreLocation event")
         }
@@ -98,7 +98,7 @@ extension AppDelegate: BeaconManagerDelegate {
         let content = UNMutableNotificationContent()
         content.title = "Beacon Receiver"
         content.body = message
-        content.sound = UNNotificationSound.default()
+        content.sound = UNNotificationSound.default
         
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
         
