@@ -10,13 +10,14 @@ import Foundation
 
 let newMessageNotification = "com.imprivata.newMessage"
 
-func timestamp() -> String {
-    let dateFormatter = DateFormatter()
-    dateFormatter.dateFormat = "YYYY-MM-dd HH:mm:ss.SSS"
-    return dateFormatter.string(from: Date())
-}
+private var dateFormatter: DateFormatter = {
+    let dt = DateFormatter()
+    dt.dateFormat = "HH:mm:ss.SSS"
+    return dt
+}()
 
 func log(_ message: String) {
-    print("[\(timestamp())] \(message)")
+    let timestamp = dateFormatter.string(from: Date())
+    print("[\(timestamp)] \(message)")
     NotificationCenter.default.post(name: Notification.Name(rawValue: newMessageNotification), object: nil, userInfo: ["message": message])
 }
