@@ -15,13 +15,13 @@ protocol BeaconManagerDelegate {
 
 final class BeaconManager: NSObject {
     
-    fileprivate let proximityUUID = UUID(uuidString: "0C9198B6-417B-4A9C-A5C4-2E2717C6E9C1")!
-    fileprivate let major: CLBeaconMajorValue = 123
-    fileprivate let minor: CLBeaconMinorValue = 456
-    fileprivate let identifier = "com.imprivata.beaconxmtr"
+    private let proximityUUID = UUID(uuidString: "2CAA4EDD-B1FD-411F-A02B-07393EAA6083")!
+    private let major: CLBeaconMajorValue = 123
+    private let minor: CLBeaconMinorValue = 456
+    private let identifier = "com.imprivata.beaconxmtr"
     
-    fileprivate var beaconRegion: CLBeaconRegion!
-    fileprivate var locationManager: CLLocationManager!
+    private var beaconRegion: CLBeaconRegion!
+    private var locationManager: CLLocationManager!
     
     var delegate: BeaconManagerDelegate?
     
@@ -43,7 +43,7 @@ final class BeaconManager: NSObject {
             return
         }
         
-        log("authorizationStatus \(CLLocationManager.authorizationStatus().toString())")
+        log("authorizationStatus \(CLLocationManager.authorizationStatus())")
         
         locationManager = CLLocationManager()
         locationManager.delegate = self
@@ -68,7 +68,7 @@ final class BeaconManager: NSObject {
         locationManager = nil
     }
     
-    fileprivate func startScanning() {
+    private func startScanning() {
         log("startScanning")
         // beaconRegion = CLBeaconRegion(proximityUUID: proximityUUID, major: major, minor: minor, identifier: identifier)
         beaconRegion = CLBeaconRegion(proximityUUID: proximityUUID, identifier: identifier)
@@ -82,7 +82,7 @@ final class BeaconManager: NSObject {
 extension BeaconManager: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        log("locationManager didChangeAuthorizationStatus \(status.toString())")
+        log("locationManager didChangeAuthorizationStatus \(status)")
         
         guard CLLocationManager.authorizationStatus()  == .authorizedAlways else {
             log("status is not AuthorizedAlways")
@@ -115,7 +115,7 @@ extension BeaconManager: CLLocationManagerDelegate {
     }
     
     func locationManager(_ manager: CLLocationManager, didDetermineState state: CLRegionState, for region: CLRegion) {
-        log("locationManager didDetermineState \(state.toString())")
+        log("locationManager didDetermineState \(state)")
     }
     
     func locationManager(_ manager: CLLocationManager, didRangeBeacons beacons: [CLBeacon], in region: CLBeaconRegion) {
@@ -124,7 +124,7 @@ extension BeaconManager: CLLocationManagerDelegate {
             log("no beacons found")
             return
         }
-        log("proximity \(beacons[0].proximity.toString())")
+        log("proximity \(beacons[0].proximity)")
     }
 
     // failures
@@ -139,41 +139,43 @@ extension BeaconManager: CLLocationManagerDelegate {
 
 }
 
-extension CLAuthorizationStatus {
-    
-    fileprivate func toString() -> String {
+extension CLAuthorizationStatus: CustomStringConvertible {
+
+    public var description: String {
         switch self {
         case .notDetermined: return "notDetermined"
         case .restricted: return "restricted"
         case .denied: return "denied"
         case .authorizedAlways: return "authorizedAlways"
         case .authorizedWhenInUse: return "authorizedWhenInUse"
+        @unknown default: return "wtf!"
         }
     }
-    
+
 }
 
-extension CLRegionState {
-    
-    fileprivate func toString() -> String {
+extension CLRegionState: CustomStringConvertible {
+
+    public var description: String {
         switch self {
         case .unknown: return "unknown"
         case .inside: return "inside"
         case .outside: return "outside"
         }
     }
-    
+
 }
 
-extension CLProximity {
-    
-    fileprivate func toString() -> String {
+extension CLProximity: CustomStringConvertible {
+
+    public var description: String {
         switch self {
         case .unknown: return "unknown"
         case .immediate: return "immediate"
         case .near: return "near"
         case .far: return "far"
+        @unknown default: return "wtf!"
         }
     }
-    
+
 }
