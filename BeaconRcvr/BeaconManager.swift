@@ -18,7 +18,7 @@ final class BeaconManager: NSObject {
     private let proximityUUID = UUID(uuidString: "2CAA4EDD-B1FD-411F-A02B-07393EAA6083")!
     private let identifier = "com.imprivata.beaconxmtr"
     
-    private let numberOfBeaconRegions = 1
+    private let numberOfBeaconRegions = 3
     private var beaconRegions = [CLBeaconRegion]()
     
     private var locationManager: CLLocationManager!
@@ -71,22 +71,26 @@ final class BeaconManager: NSObject {
     private func startScanning() {
         log("startScanning")
         
-        for _ in 0..<numberOfBeaconRegions {
-            // let beaconRegion = CLBeaconRegion(proximityUUID: proximityUUID, identifier: identifier)
-            let beaconRegion = CLBeaconRegion(proximityUUID: proximityUUID, major: CLBeaconMajorValue(1), identifier: identifier)
-            // let beaconRegion = CLBeaconRegion(proximityUUID: proximityUUID, major: major, minor: minor, identifier: identifier)
+        beaconRegions.removeAll()
+        
+        for i in 0..<numberOfBeaconRegions {
+            let uuid = offsetUUID(proximityUUID, by: UInt(i))
+            let beaconRegion = CLBeaconRegion(proximityUUID: uuid, identifier: "\(identifier)_\(i + 1)")
             beaconRegions.append(beaconRegion)
         }
 
+        beaconRegions.forEach { log($0.description) }
         beaconRegions.forEach { locationManager.startMonitoring(for: $0) }
-
-//        // beaconRegion = CLBeaconRegion(proximityUUID: proximityUUID, identifier: identifier)
-//        beaconRegion = CLBeaconRegion(proximityUUID: proximityUUID, major: major, identifier: identifier)
-//        // beaconRegion = CLBeaconRegion(proximityUUID: proximityUUID, major: major, minor: minor, identifier: identifier)
-//        locationManager.startMonitoring(for: beaconRegion)
-        
-        // locationManager.requestStateForRegion(beaconRegion)
-        // locationManager.startRangingBeaconsInRegion(beaconRegion)
+    }
+    
+    private func offsetUUID(_ uuid: UUID, by offset: UInt) -> UUID {
+        let nDigits = 8
+        let lastDigitsString = uuid.uuidString.suffix(nDigits)
+        let lastDigits = UInt(lastDigitsString, radix: 16)!
+        let s = String(format: "%0\(nDigits)X", lastDigits + offset)
+        let offsetUUIDString = uuid.uuidString.dropLast(nDigits) + s
+        log("uuid \(offsetUUIDString)")
+        return UUID(uuidString: String(offsetUUIDString))!
     }
     
 }
@@ -113,21 +117,21 @@ extension BeaconManager: CLLocationManagerDelegate {
     }
     
     func locationManager(_ manager: CLLocationManager, didStartMonitoringFor region: CLRegion) {
-        log("locationManager didStartMonitoringForRegion \(region.major)")
+        log("locationManager didStartMonitoringForRegion \(region.id)")
     }
     
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
-        log("locationManager didEnterRegion \(region.major)")
-        delegate?.showNotification("didEnterRegion \(region.major)")
+        log("locationManager didEnterRegion \(region.id)")
+        delegate?.showNotification("didEnterRegion \(region.id)")
     }
     
     func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
-        log("locationManager didExitRegion \(region.major)")
-        delegate?.showNotification("didExitRegion \(region.major)")
+        log("locationManager didExitRegion \(region.id)")
+        delegate?.showNotification("didExitRegion \(region.id)")
     }
     
     func locationManager(_ manager: CLLocationManager, didDetermineState state: CLRegionState, for region: CLRegion) {
-        log("locationManager didDetermineState \(state) \(region.major)")
+        log("locationManager didDetermineState \(state) \(region.id)")
     }
     
     func locationManager(_ manager: CLLocationManager, didRangeBeacons beacons: [CLBeacon], in region: CLBeaconRegion) {
@@ -193,6 +197,13 @@ extension CLProximity: CustomStringConvertible {
 }
 
 extension CLRegion {
+    
+    var id: String {
+        if let proximityUUID = (self as? CLBeaconRegion)?.proximityUUID {
+            return String(proximityUUID.uuidString.suffix(4))
+        }
+        return "Ø"
+    }
     
     var major: String {
         if let number = (self as? CLBeaconRegion)?.major {
