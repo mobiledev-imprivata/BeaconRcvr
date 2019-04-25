@@ -16,19 +16,19 @@ protocol BeaconManagerDelegate {
 final class BeaconManager: NSObject {
     
     private let proximityUUID = UUID(uuidString: "2CAA4EDD-B1FD-411F-A02B-07393EAA6083")!
-    private let major: CLBeaconMajorValue = 123
-    private let minor: CLBeaconMinorValue = 456
     private let identifier = "com.imprivata.beaconxmtr"
     
-    private var beaconRegion: CLBeaconRegion!
-    private var locationManager: CLLocationManager!
+    private let numberOfBeaconRegions = 1
+    private var beaconRegions = [CLBeaconRegion]()
     
+    private var locationManager: CLLocationManager!
+
     var delegate: BeaconManagerDelegate?
     
     func startMonitoring() {
         log("startMonitoring")
         
-        guard beaconRegion == nil && locationManager == nil else {
+        guard beaconRegions.isEmpty && locationManager == nil else {
             log("already monitoring")
             return
         }
@@ -58,21 +58,33 @@ final class BeaconManager: NSObject {
     func stopMonitoring() {
         log("stopMonitoring")
         
-        guard beaconRegion != nil && locationManager != nil else {
+        guard !beaconRegions.isEmpty && locationManager != nil else {
             log("already stopped")
             return
         }
         
-        locationManager.stopMonitoring(for: beaconRegion)
-        beaconRegion = nil
+        beaconRegions.forEach { locationManager.stopMonitoring(for: $0) }
+        beaconRegions.removeAll()
         locationManager = nil
     }
     
     private func startScanning() {
         log("startScanning")
-        // beaconRegion = CLBeaconRegion(proximityUUID: proximityUUID, major: major, minor: minor, identifier: identifier)
-        beaconRegion = CLBeaconRegion(proximityUUID: proximityUUID, identifier: identifier)
-        locationManager.startMonitoring(for: beaconRegion)
+        
+        for _ in 0..<numberOfBeaconRegions {
+            // let beaconRegion = CLBeaconRegion(proximityUUID: proximityUUID, identifier: identifier)
+            let beaconRegion = CLBeaconRegion(proximityUUID: proximityUUID, major: CLBeaconMajorValue(1), identifier: identifier)
+            // let beaconRegion = CLBeaconRegion(proximityUUID: proximityUUID, major: major, minor: minor, identifier: identifier)
+            beaconRegions.append(beaconRegion)
+        }
+
+        beaconRegions.forEach { locationManager.startMonitoring(for: $0) }
+
+//        // beaconRegion = CLBeaconRegion(proximityUUID: proximityUUID, identifier: identifier)
+//        beaconRegion = CLBeaconRegion(proximityUUID: proximityUUID, major: major, identifier: identifier)
+//        // beaconRegion = CLBeaconRegion(proximityUUID: proximityUUID, major: major, minor: minor, identifier: identifier)
+//        locationManager.startMonitoring(for: beaconRegion)
+        
         // locationManager.requestStateForRegion(beaconRegion)
         // locationManager.startRangingBeaconsInRegion(beaconRegion)
     }
@@ -101,21 +113,21 @@ extension BeaconManager: CLLocationManagerDelegate {
     }
     
     func locationManager(_ manager: CLLocationManager, didStartMonitoringFor region: CLRegion) {
-        log("locationManager didStartMonitoringForRegion")
+        log("locationManager didStartMonitoringForRegion \(region.major)")
     }
     
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
-        log("locationManager didEnterRegion")
-        delegate?.showNotification("didEnterRegion")
+        log("locationManager didEnterRegion \(region.major)")
+        delegate?.showNotification("didEnterRegion \(region.major)")
     }
     
     func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
-        log("locationManager didExitRegion")
-        delegate?.showNotification("didExitRegion")
+        log("locationManager didExitRegion \(region.major)")
+        delegate?.showNotification("didExitRegion \(region.major)")
     }
     
     func locationManager(_ manager: CLLocationManager, didDetermineState state: CLRegionState, for region: CLRegion) {
-        log("locationManager didDetermineState \(state)")
+        log("locationManager didDetermineState \(state) \(region.major)")
     }
     
     func locationManager(_ manager: CLLocationManager, didRangeBeacons beacons: [CLBeacon], in region: CLBeaconRegion) {
@@ -178,4 +190,22 @@ extension CLProximity: CustomStringConvertible {
         }
     }
 
+}
+
+extension CLRegion {
+    
+    var major: String {
+        if let number = (self as? CLBeaconRegion)?.major {
+            return "\(number)"
+        }
+        return "Ø"
+    }
+    
+    var minor: String {
+        if let number = (self as? CLBeaconRegion)?.minor {
+            return "\(number)"
+        }
+        return "Ø"
+    }
+    
 }
