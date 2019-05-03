@@ -18,7 +18,7 @@ final class BeaconManager: NSObject {
     private let proximityUUID = UUID(uuidString: "2CAA4EDD-B1FD-411F-A02B-07393EAA6083")!
     private let identifier = "com.imprivata.beaconxmtr"
     
-    private let numberOfBeaconRegions = 1
+    private let numberOfBeaconRegions = 3
     private var beaconRegions = [CLBeaconRegion]()
     
     private var locationManager: CLLocationManager!
@@ -57,12 +57,10 @@ final class BeaconManager: NSObject {
     
     func stopMonitoring() {
         log("stopMonitoring")
-        
         guard !beaconRegions.isEmpty && locationManager != nil else {
             log("already stopped")
             return
         }
-        
         beaconRegions.forEach { locationManager.stopMonitoring(for: $0) }
         beaconRegions.removeAll()
         locationManager = nil
@@ -70,23 +68,13 @@ final class BeaconManager: NSObject {
     
     private func startScanning() {
         log("startScanning")
-        
-        for _ in 0..<numberOfBeaconRegions {
-            // let beaconRegion = CLBeaconRegion(proximityUUID: proximityUUID, identifier: identifier)
-            let beaconRegion = CLBeaconRegion(proximityUUID: proximityUUID, major: CLBeaconMajorValue(1), identifier: identifier)
-            // let beaconRegion = CLBeaconRegion(proximityUUID: proximityUUID, major: major, minor: minor, identifier: identifier)
+        beaconRegions.removeAll()
+        for major in 1...numberOfBeaconRegions {
+            let beaconRegion = CLBeaconRegion(proximityUUID: proximityUUID, major: CLBeaconMajorValue(major), identifier: "\(identifier).\(major)")
             beaconRegions.append(beaconRegion)
         }
-
+        beaconRegions.forEach { log($0.description) }
         beaconRegions.forEach { locationManager.startMonitoring(for: $0) }
-
-//        // beaconRegion = CLBeaconRegion(proximityUUID: proximityUUID, identifier: identifier)
-//        beaconRegion = CLBeaconRegion(proximityUUID: proximityUUID, major: major, identifier: identifier)
-//        // beaconRegion = CLBeaconRegion(proximityUUID: proximityUUID, major: major, minor: minor, identifier: identifier)
-//        locationManager.startMonitoring(for: beaconRegion)
-        
-        // locationManager.requestStateForRegion(beaconRegion)
-        // locationManager.startRangingBeaconsInRegion(beaconRegion)
     }
     
 }
